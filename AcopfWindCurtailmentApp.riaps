@@ -1,0 +1,43 @@
+app AcopfWindCurtailmentApp {
+	message KeepAlive;
+	message DataFrame;
+	message RasCmdMsg;
+	library case14mod;
+	library libopf;
+	library pypmu;
+	
+	device C37118InputDataAdapter() {
+		inside queue /* default */;
+		timer clock 1000;
+		pub pmuData: DataFrame;
+	}
+	
+//	component CtrlCmdOutputAdapter {
+//		timer clock 1000;
+//		pub ready: DataframePgMsg;
+//	}
+	
+	
+	
+	component Leader {
+		timer clock 1000;
+		sub pmuDataReady: DataFrame;
+		pub backuplink: KeepAlive;
+		
+	}
+	
+	actor WindCurtailmentActor {
+		local DataFrame;
+		{
+			inputadapter : C37118InputDataAdapter();
+			leader : Leader();
+		}
+	}
+	
+//	actor Leader {
+//		{
+//			leader: Leader;
+//		}
+//	}
+	
+}
